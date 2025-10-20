@@ -62,7 +62,7 @@ namespace LEARN_MVVM.WeatherAppModule
             if (!weatherApiResponse.IsSuccess)
             {
                 // show snackbar with error message
-                SnackbarService.Show("Fehler", string.Concat(weatherApiResponse.Errors),
+                SnackbarService.Show("Something went wrong", string.Concat(weatherApiResponse.Errors),
                     ControlAppearance.Danger, new SymbolIcon(SymbolRegular.Fluent24), TimeSpan.FromSeconds(3));
 
                 return;
