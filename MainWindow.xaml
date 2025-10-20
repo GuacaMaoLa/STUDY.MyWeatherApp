@@ -1,0 +1,65 @@
+﻿<Window x:Class="LEARN_MVVM.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LEARN_MVVM"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        mc:Ignorable="d"
+        Height="450" Width="800"
+        Background="Transparent"
+        AllowsTransparency="False"
+        d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel}">
+
+    <Window.DataContext>
+        <local:MainWindowViewModel/>
+    </Window.DataContext>
+    
+    <Border Background="#272537"
+            CornerRadius="20">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Column="0" Grid.Row="0"
+                Text="MyWeatherApp"
+                FontSize="18"
+                Foreground="White"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                Margin="10,0,0,0"/>
+
+            <StackPanel Grid.Row="1">
+                <RadioButton Content="Home"
+                 Height="50"
+                 Foreground="White"
+                 FontSize="16"
+                 IsChecked="True"
+                 Command="{Binding HomeViewCommand}"/>
+                <RadioButton Content="History"
+                 Height="50"
+                 Foreground="White"
+                 FontSize="16" 
+                 Command="{Binding HistoryViewCommand}"/>
+                <RadioButton Content="Logout"
+                 Height="50"
+                 Foreground="White"
+                 FontSize="16"/>
+            </StackPanel>
+            
+            <ContentControl Grid.Row="1"
+                Grid.Column="1"
+                Margin="5"
+                Content="{Binding CurrentView}"/>
+            
+            <ui:SnackbarPresenter Grid.Column="1" Grid.Row="1" x:Name="SnackbarPresenter"/>
+        </Grid>
+    </Border>
+</Window>

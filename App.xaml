@@ -1,0 +1,29 @@
+﻿<Application x:Class="LEARN_MVVM.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:LEARN_MVVM"
+             xmlns:weatherVM="clr-namespace:LEARN_MVVM.WeatherAppModule"
+             xmlns:weatherView="clr-namespace:LEARN_MVVM.WeatherAppModule"
+             xmlns:historyVM="clr-namespace:LEARN_MVVM.HistoryModule"
+             xmlns:historyView="clr-namespace:LEARN_MVVM.HistoryModule"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             StartupUri="MainWindow.xaml"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:ThemesDictionary Theme="Dark" />
+                <ui:ControlsDictionary />
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type weatherVM:WeatherAppViewModel}">
+                <weatherView:WeatherAppView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type historyVM:HistoryViewModel}">
+                <historyView:HistoryView/>
+            </DataTemplate>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
