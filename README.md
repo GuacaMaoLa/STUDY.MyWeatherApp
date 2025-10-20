@@ -5,7 +5,8 @@ It contains the basics of:
 2. XAML and C#
 3. API-Calls
 4. Error Handling/Result pattern
-5. SQLite Database
-6. EF Core
-7. Transactions
-8. CRUD Repository
+5. Dependency Injection (Coding pattern)
+6. SQLite Database
+7. EF Core
+8. Transactions
+9. CRUD Repository
