@@ -1,4 +1,4 @@
-This is a example project for me to learn the basics of a industrial fullstack developer.
+This is an example project to help me learn the basics of being an industrial full-stack developer.
 
 It contains the basics of:
 1. MVVM-Architecture
