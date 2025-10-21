@@ -51,6 +51,8 @@ namespace LEARN_MVVM.WeatherAppModule
 
         private async Task OnExecuteSearchTemp()
         {
+            // trim any leading or trailing whitespaces
+            City = City.Trim();
             
             // check if Database already have an entry for the city
             bool hasEntry = await HasEntryTemperatureTable(City);
@@ -69,10 +71,8 @@ namespace LEARN_MVVM.WeatherAppModule
             }
             
             double temp_K = weatherApiResponse.Value!.Main.Temp;
-            double temp_C = temp_K - KELVIN;
-            string temp_text = temp_C.ToString("0.##");
-
-            Temp = $"It is currently {temp_text}°C";
+            
+            ShowTemperature(temp_K);
 
             using var scope = App.ServiceProvider.CreateScope();
             var repo = scope.ServiceProvider.GetRequiredService<WeatherRepository>();
@@ -104,12 +104,20 @@ namespace LEARN_MVVM.WeatherAppModule
             
             if (read is null) return false;
 
-            string temp_text = string.Empty;
             DateTimeOffset now = DateTimeOffset.UtcNow;
             TimeSpan interval = now - read.TimeStamp;
 
-            if (interval.TotalMinutes < COOLDOWN) return false;
+            // if there is an entry less then the cooldown use read temperature
+            if (interval.TotalMinutes < COOLDOWN)
+            {
+                double temp_K = read.Temp;
+                
+                ShowTemperature(temp_K);
 
+                return true;
+            }
+
+            // else get new temperature
             Result<Root> update = await GetApiRequestAsync(_city);
             
             if (!update.IsSuccess)
@@ -127,14 +135,12 @@ namespace LEARN_MVVM.WeatherAppModule
                 read.TimeStamp = now;
                 
                 read.Temp = update.Value!.Main.Temp;
+                
+                double temp_K = read.Temp;
+
+                ShowTemperature(temp_K);
                 // Update time stamp for entry
                 await repo.UpdateWeatherAsync();
-
-                double _temp_C = read.Temp - KELVIN;
-                
-                temp_text = _temp_C.ToString("0.##");
-                
-                Temp = $"It is currently {temp_text}°C";
 
                 transaction.Commit();
             }
@@ -148,9 +154,13 @@ namespace LEARN_MVVM.WeatherAppModule
 
         private static async Task<Result<Root>> GetApiRequestAsync(string _city)
         {
-            if (string.IsNullOrEmpty(_city))
+            if (string.IsNullOrWhiteSpace(_city))
             {
                 return Result.Error("Please type in a city name");
+            }
+            else if (_city.Any(char.IsDigit))
+            {
+                return Result.Error("Invalid search input");
             }
 
             IWeatherService weatherApi = RestService.For<IWeatherService>(WEATHERAPI);
@@ -167,6 +177,15 @@ namespace LEARN_MVVM.WeatherAppModule
 
                 return Result.Error(ex.Message);
             }
+        }
+
+        private void ShowTemperature(double temp_K)
+        {
+            double _temp_C = temp_K - KELVIN;
+
+            string _temp_text = _temp_C.ToString("0.##");
+
+            Temp = $"It is currently {_temp_text}°C";
         }
 
         public WeatherAppViewModel()
