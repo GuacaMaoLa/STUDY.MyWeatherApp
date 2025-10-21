@@ -24,17 +24,18 @@
             </Grid.ColumnDefinitions>
 
             <Grid.RowDefinitions>
-                <RowDefinition Height="70"/>
+                <RowDefinition Height="40"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Column="0" Grid.Row="0"
+            <ui:TextBlock Grid.Column="0" Grid.Row="0"
                 Text="MyWeatherApp"
+                FontTypography="Title"
                 FontSize="18"
                 Foreground="White"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                Margin="10,0,0,0"/>
+                Margin="10,10,0,0"/>
 
             <StackPanel Grid.Row="1">
                 <RadioButton Content="Home"
