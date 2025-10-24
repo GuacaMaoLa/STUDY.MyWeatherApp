@@ -5,7 +5,9 @@ using LEARN_MVVM.DataAccess;
 using LEARN_MVVM.Models;
 using LEARN_MVVM.Repository;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Refit;
+using System.IO;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
 
@@ -59,18 +61,27 @@ namespace LEARN_MVVM.WeatherAppModule
             if (hasEntry) return;
             
             // else get new api response
-            Result<Root> weatherApiResponse = await GetApiRequestAsync(City);
+            Result<Root> _weatherApiResponse = await GetApiRequestAsync(City);
+            
+            //string json = JsonConvert.SerializeObject(_weatherApiResponse, Formatting.Indented);
 
-            if (!weatherApiResponse.IsSuccess)
+            //using (StreamWriter file = File.CreateText($"{Directory.GetCurrentDirectory()}SQLite"))
+            //{
+            //    JsonSerializer serializer = new();
+            //    //serialize object directly into file stream
+            //    serializer.Serialize(file, _weatherApiResponse);
+            //}
+
+            if (!_weatherApiResponse.IsSuccess)
             {
                 // show snackbar with error message
-                SnackbarService.Show("Something went wrong", string.Concat(weatherApiResponse.Errors),
+                SnackbarService.Show("Something went wrong", string.Concat(_weatherApiResponse.Errors),
                     ControlAppearance.Danger, new SymbolIcon(SymbolRegular.Fluent24), TimeSpan.FromSeconds(3));
 
                 return;
             }
             
-            double temp_K = weatherApiResponse.Value!.Main.Temp;
+            double temp_K = _weatherApiResponse.Value!.Main.Temp;
             
             ShowTemperature(temp_K);
 
