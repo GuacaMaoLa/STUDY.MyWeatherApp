@@ -18,7 +18,7 @@ namespace LEARN_MVVM.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     TimeStamp = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
-                    City = table.Column<string>(type: "TEXT", nullable: false),
+                    City = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Temp = table.Column<double>(type: "double(2,2)", nullable: false)
                 },
                 constraints: table =>

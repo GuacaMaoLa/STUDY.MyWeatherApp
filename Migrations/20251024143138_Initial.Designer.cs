@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LEARN_MVVM.Migrations
 {
     [DbContext(typeof(WeatherAppContext))]
-    [Migration("20251017092603_Initial")]
+    [Migration("20251024143138_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -28,6 +28,7 @@ namespace LEARN_MVVM.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Temp")

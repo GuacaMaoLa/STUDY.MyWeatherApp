@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace LEARN_MVVM.Data
 {
-    internal class DesignTimeDBContext : IDesignTimeDbContextFactory<WeatherAppContext>
+    internal class WeatherAppContextFactory : IDesignTimeDbContextFactory<WeatherAppContext>
     {
         public WeatherAppContext CreateDbContext(string[] args)
         {

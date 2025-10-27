@@ -12,7 +12,7 @@ namespace LEARN_MVVM
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public sealed partial class App : Application
+    public partial class App : Application
     {
         // Initialize Snackbar Provider
         private static readonly IServiceProvider _serviceProvider;
@@ -29,7 +29,7 @@ namespace LEARN_MVVM
             DbPath = System.IO.Path.Join(path, "WeatherAppDataBase.db");
 #elif DEBUG
             string path = Environment.CurrentDirectory;
-            DbPath = System.IO.Path.Join(path, "WeatherAppDebugDataBase.sqlite3");
+            DbPath = System.IO.Path.Join(path, "WeatherAppDebugDataBase.db");
 #endif
             var services = new ServiceCollection();
 
@@ -40,32 +40,27 @@ namespace LEARN_MVVM
             });
             services.AddScoped<WeatherRepository>();
 
-            // TODO: EF Core einlesen
-            // TODO: SQLite verwenden
-            // TODO: Repository dafür erstellen (CRUD Repository --> Repository pattern)
-            // TODO: WeaterApi anfragen in EF Core speichern
-            // TODO: Alles mittels DI zu verwenden
-
             _serviceProvider = services.BuildServiceProvider();
             
             using var scope = _serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<WeatherAppContext>();
-
-            Task.Factory.StartNew(async () => await context.Database.MigrateAsync());
-
-            //Task.Run(async () => await context.Database.MigrateAsync());
-
-            //Application.Current.Dispatcher.Invoke(async () => await context.Database.MigrateAsync());
-
-            // TODO: Unit tests schreiben und prüfen async Methods in void methods aufrufen
-            // TODO: mstest / nunit / xunit
-            // Alle testfälle im happy path testen
-            // Alle testfälle im error path testen
-        }
-
-        private Task Throws()
-        {
-            throw new NotImplementedException();
+#if DEBUG
+            //context.Database.EnsureDeleted();
+#endif
+            //Task.Factory.StartNew(async () => await context.Database.MigrateAsync()).Unwrap();
+            // Here I learned the hardway why you shouldn't use Task.Factory.StartNew for async tasks
+            Task.Run(async () => await context.Database.MigrateAsync()).Wait();
         }
     }
 }
+
+// TODO: EF Core einlesen
+// TODO: SQLite verwenden
+// TODO: Repository dafür erstellen (CRUD Repository --> Repository pattern)
+// TODO: WeaterApi anfragen in EF Core speichern
+// TODO: Alles mittels DI zu verwenden
+
+// TODO: Unit tests schreiben und prüfen async Methods in void methods aufrufen
+// TODO: mstest / nunit / xunit
+// Alle testfälle im happy path testen
+// Alle testfälle im error path testen

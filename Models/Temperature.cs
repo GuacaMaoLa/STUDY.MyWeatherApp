@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LEARN_MVVM.Models
 {
@@ -8,6 +9,8 @@ namespace LEARN_MVVM.Models
 
         public DateTimeOffset TimeStamp { get; set; }
 
+        [Required]
+        [MaxLength(100)]
         public string City { get; set; } = null!;
 
         [Column(TypeName = "double(2,2)")]
