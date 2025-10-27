@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace LEARN_MVVM.HistoryModule
+namespace LEARN_MVVM.Modules.HistoryModule
 {
     /// <summary>
     /// Interaction logic for SettingsView.xaml

@@ -11,7 +11,7 @@ using System.IO;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
 
-namespace LEARN_MVVM.WeatherAppModule
+namespace LEARN_MVVM.Modules.WeatherAppModule
 {
     public partial class WeatherAppViewModel : ObservableObject
     {

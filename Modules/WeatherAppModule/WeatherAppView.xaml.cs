@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace LEARN_MVVM.WeatherAppModule
+namespace LEARN_MVVM.Modules.WeatherAppModule
 {
     /// <summary>
     /// Interaction logic for WeatherAppView.xaml

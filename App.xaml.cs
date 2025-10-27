@@ -32,7 +32,7 @@ namespace LEARN_MVVM
             DbPath = System.IO.Path.Join(path, "WeatherAppDebugDataBase.db");
 #endif
             var services = new ServiceCollection();
-
+            
             services.AddSingleton<ISnackbarService>(new SnackbarService());
             services.AddDbContext<WeatherAppContext>(options =>
             {

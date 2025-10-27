@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using LEARN_MVVM.HistoryModule;
-using LEARN_MVVM.WeatherAppModule;
+using LEARN_MVVM.Modules.HistoryModule;
+using LEARN_MVVM.Modules.WeatherAppModule;
 
 namespace LEARN_MVVM
 {

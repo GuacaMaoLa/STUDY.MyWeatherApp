@@ -1,11 +1,7 @@
-﻿namespace LEARN_MVVM.HistoryModule
+﻿namespace LEARN_MVVM.Modules.HistoryModule
 {
     public class HistoryViewModel
     {
-        
-        
-        
-        
         public HistoryViewModel() 
         {
             
