@@ -10,6 +10,7 @@ using Refit;
 using System.IO;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LEARN_MVVM.Modules.WeatherAppModule
 {
@@ -61,7 +62,7 @@ namespace LEARN_MVVM.Modules.WeatherAppModule
             if (hasEntry) return;
             
             // else get new api response
-            Result<Root> _weatherApiResponse = await GetApiRequestAsync(City);
+            Result<Root> weatherApiResponse = await GetApiRequestAsync(City);
             
             //string json = JsonConvert.SerializeObject(_weatherApiResponse, Formatting.Indented);
 
@@ -72,16 +73,15 @@ namespace LEARN_MVVM.Modules.WeatherAppModule
             //    serializer.Serialize(file, _weatherApiResponse);
             //}
 
-            if (!_weatherApiResponse.IsSuccess)
+            if (!weatherApiResponse.IsSuccess)
             {
                 // show snackbar with error message
-                SnackbarService.Show("Something went wrong", string.Concat(_weatherApiResponse.Errors),
-                    ControlAppearance.Danger, new SymbolIcon(SymbolRegular.Fluent24), TimeSpan.FromSeconds(3));
+                ShowSnackbarErrorMsg(weatherApiResponse);
 
                 return;
             }
             
-            double temp_K = _weatherApiResponse.Value!.Main.Temp;
+            double temp_K = weatherApiResponse.Value!.Main.Temp;
             
             ShowTemperature(temp_K);
 
@@ -133,8 +133,7 @@ namespace LEARN_MVVM.Modules.WeatherAppModule
             
             if (!update.IsSuccess)
             {
-                SnackbarService.Show("Fehler", string.Concat(update.Errors),
-                    ControlAppearance.Danger, new SymbolIcon(SymbolRegular.Fluent24), TimeSpan.FromSeconds(3));
+                ShowSnackbarErrorMsg(update);
 
                 return true;
             }
@@ -188,6 +187,12 @@ namespace LEARN_MVVM.Modules.WeatherAppModule
 
                 return Result.Error(ex.Message);
             }
+        }
+
+        private void ShowSnackbarErrorMsg(Result<Root> apiResponse)
+        {
+            SnackbarService.Show("Something went wrong", string.Concat(apiResponse.Errors),
+                    ControlAppearance.Danger, new SymbolIcon(SymbolRegular.Fluent24), TimeSpan.FromSeconds(3));
         }
 
         private void ShowTemperature(double temp_K)
