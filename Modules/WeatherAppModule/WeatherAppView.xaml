@@ -30,13 +30,13 @@
                     PlaceholderText="Type city name" 
                     TextWrapping="Wrap"
                     Grid.Column="1" 
-                    Margin="-150,40,10,20" 
+                    Margin="-150,40,10,40" 
                     Text="{Binding City}"/>
         <TextBlock Foreground="White" 
                    Text="{Binding Temp}"
                    TextWrapping="Wrap"
                    Grid.Column="1" Grid.Row="1"
-                   FontSize="16"
+                   FontSize="18"
                    TextAlignment="Center"
                    Margin="-150,40,20,40"/>
         <ui:Button Content="Search" 
