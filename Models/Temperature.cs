@@ -11,6 +11,7 @@ namespace LEARN_MVVM.Models
 
         [Required]
         [MaxLength(100)]
+        
         public string City { get; set; } = null!;
 
         [Column(TypeName = "double(2,2)")]

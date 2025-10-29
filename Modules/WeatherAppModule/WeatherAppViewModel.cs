@@ -18,7 +18,6 @@ namespace LEARN_MVVM.Modules.WeatherAppModule
     {
         private const short COOLDOWN = 10;
         private const double KELVIN = 273.15;
-        private const string WEATHERAPI = "https://api.openweathermap.org/data/2.5";
         
         /// <summary>
         /// Clear the content of every textbox
@@ -57,139 +56,25 @@ namespace LEARN_MVVM.Modules.WeatherAppModule
             // trim any leading or trailing whitespaces
             City = City.Trim();
             
+            using var scope = App.ServiceProvider.CreateScope();
+            var repo = scope.ServiceProvider.GetRequiredService<IWeatherRepository>();
             // check if Database already have an entry for the city
-            bool hasEntry = await HasEntryTemperatureTable(City);
-            if (hasEntry) return;
-            
-            // else get new api response
-            Result<Root> weatherApiResponse = await GetApiRequestAsync(City);
-            
-            //string json = JsonConvert.SerializeObject(_weatherApiResponse, Formatting.Indented);
+            var temperatureEntry = await repo.ReadWeatherAsync(City);
 
-            //using (StreamWriter file = File.CreateText($"{Directory.GetCurrentDirectory()}SQLite"))
-            //{
-            //    JsonSerializer serializer = new();
-            //    //serialize object directly into file stream
-            //    serializer.Serialize(file, _weatherApiResponse);
-            //}
-
-            if (!weatherApiResponse.IsSuccess)
+            if (!temperatureEntry.IsSuccess)
             {
                 // show snackbar with error message
-                ShowSnackbarErrorMsg(weatherApiResponse);
+                ShowSnackbarErrorMsg(temperatureEntry);
 
                 return;
             }
-            
-            double temp_K = weatherApiResponse.Value!.Main.Temp;
+
+            double temp_K = temperatureEntry.Value!.Temp;
             
             ShowTemperature(temp_K);
-
-            using var scope = App.ServiceProvider.CreateScope();
-            var repo = scope.ServiceProvider.GetRequiredService<WeatherRepository>();
-            using var transaction = repo.BeginTransaction();
-
-            try
-            {
-                // Creates a new entry in Temperature Table
-                await repo.SaveWeatherAsync(new Temperature
-                {
-                    City = City,
-                    Temp = temp_K,
-                    TimeStamp = DateTimeOffset.UtcNow
-                });
-                transaction.Commit();
-            }
-            catch (Exception)
-            {
-                transaction.Rollback();
-            }
         }
 
-        private async Task<bool> HasEntryTemperatureTable(string _city)
-        {
-            using var scope = App.ServiceProvider.CreateScope();
-            var repo = scope.ServiceProvider.GetRequiredService<WeatherRepository>();
-            
-            Temperature? read = await repo.ReadWeatherAsync(_city);
-            
-            if (read is null) return false;
-
-            DateTimeOffset now = DateTimeOffset.UtcNow;
-            TimeSpan interval = now - read.TimeStamp;
-
-            // if there is an entry less then the cooldown use read temperature
-            if (interval.TotalMinutes < COOLDOWN)
-            {
-                double temp_K = read.Temp;
-                
-                ShowTemperature(temp_K);
-
-                return true;
-            }
-
-            // else get new temperature
-            Result<Root> update = await GetApiRequestAsync(_city);
-            
-            if (!update.IsSuccess)
-            {
-                ShowSnackbarErrorMsg(update);
-
-                return true;
-            }
-            
-            using var transaction = repo.BeginTransaction();
-
-            try
-            {
-                read.TimeStamp = now;
-                
-                read.Temp = update.Value!.Main.Temp;
-                
-                double temp_K = read.Temp;
-
-                ShowTemperature(temp_K);
-                // Update time stamp for entry
-                await repo.UpdateWeatherAsync();
-
-                transaction.Commit();
-            }
-            catch (Exception)
-            {
-                transaction.Rollback();
-            }
-
-            return true;
-        }
-
-        private static async Task<Result<Root>> GetApiRequestAsync(string _city)
-        {
-            if (string.IsNullOrWhiteSpace(_city))
-            {
-                return Result.Error("Please type in a city name");
-            }
-            else if (_city.Any(char.IsDigit))
-            {
-                return Result.Error("Invalid search input");
-            }
-
-            IWeatherService weatherApi = RestService.For<IWeatherService>(WEATHERAPI);
-
-            try
-            {
-                Root response = await weatherApi.GetWeather(_city);
-
-                return Result.Success(response);
-            }
-            catch (Exception ex)
-            {
-                // TODO: Exception to Result mapping
-
-                return Result.Error(ex.Message);
-            }
-        }
-
-        private void ShowSnackbarErrorMsg(Result<Root> apiResponse)
+        private void ShowSnackbarErrorMsg(Result<Temperature> apiResponse)
         {
             SnackbarService.Show("Something went wrong", string.Concat(apiResponse.Errors),
                     ControlAppearance.Danger, new SymbolIcon(SymbolRegular.Fluent24), TimeSpan.FromSeconds(3));
@@ -212,3 +97,12 @@ namespace LEARN_MVVM.Modules.WeatherAppModule
         }
     } 
 }
+
+//string json = JsonConvert.SerializeObject(_weatherApiResponse, Formatting.Indented);
+
+//using (StreamWriter file = File.CreateText($"{Directory.GetCurrentDirectory()}SQLite"))
+//{
+//    JsonSerializer serializer = new();
+//    //serialize object directly into file stream
+//    serializer.Serialize(file, _weatherApiResponse);
+//}

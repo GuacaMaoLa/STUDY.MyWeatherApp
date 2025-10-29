@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using Ardalis.Result;
 using LEARN_MVVM.Data;
 using LEARN_MVVM.Models;
 using Microsoft.EntityFrameworkCore;
@@ -6,11 +7,18 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LEARN_MVVM.Repository
 {
-    public class WeatherRepository(WeatherAppContext db) : IWeatherRepository
+    internal sealed class WeatherRepository : IWeatherRepository
     {
+        private readonly WeatherAppContext _db;
+
+        public WeatherRepository(WeatherAppContext db)
+        {
+            _db = db;
+        }
+
         public IDbTransaction BeginTransaction()
         {
-            var transaction = db.Database.BeginTransaction();
+            var transaction = _db.Database.BeginTransaction();
 
             return transaction.GetDbTransaction();
         }
@@ -18,34 +26,39 @@ namespace LEARN_MVVM.Repository
         // Create a entry
         public async Task SaveWeatherAsync(Temperature entry)
         {
-            db.Temperatures.Add(entry);
-            await db.SaveChangesAsync();
+            _db.Temperatures.Add(entry);
+            await _db.SaveChangesAsync();
         }
 
         // Read a entry
-        public async Task<Temperature?> ReadWeatherAsync(string city)
+        public async Task<Result<Temperature>> ReadWeatherAsync(string city)
         {
-            //var entry = from temperatures in db.Temperature
-            //            select temperatures;
+            var entry = await _db.Temperatures.FirstOrDefaultAsync(t => t.City == city);
+            
+            if (entry is not null)
+            {
+                return entry;
+            }
 
-            var entry = await db.Temperatures.SingleOrDefaultAsync(t => t.City == city);
-
-            return entry;
+            return Result.NotFound();
         }
-        
+        //=> await _db
+        //    .Set<Temperature>()
+        //    .SingleOrDefaultAsync(temperature => temperature.City == city);
+
         // Update a entry
         public async Task UpdateWeatherAsync()
         {
-            bool hasChanges= db.ChangeTracker.HasChanges();
+            bool hasChanges= _db.ChangeTracker.HasChanges();
             if (!hasChanges) return;
-            await db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
         }
 
         // Delete a entry
-        public async Task RemoveWeatherAsync(Temperature entry)
+        public async Task DeleteWeatherAsync(Temperature entry)
         {
-            db.Temperatures.Remove(entry);
-            await db.SaveChangesAsync();
+            _db.Temperatures.Remove(entry);
+            await _db.SaveChangesAsync();
         }
     }
 }

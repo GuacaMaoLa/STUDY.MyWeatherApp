@@ -1,9 +1,11 @@
 ﻿using LEARN_MVVM.Data;
+using LEARN_MVVM.DataAccess;
 using LEARN_MVVM.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
+using Refit;
+using Scrutor;
 using System.Windows;
 using Wpf.Ui;
 
@@ -17,7 +19,7 @@ namespace LEARN_MVVM
         // Initialize Snackbar Provider
         private static readonly IServiceProvider _serviceProvider;
         public static IServiceProvider ServiceProvider => _serviceProvider;
-
+        private const string WEATHERAPI = "https://api.openweathermap.org/data/2.5";
         // Path to Database
         public static string DbPath { get; }
 
@@ -38,8 +40,10 @@ namespace LEARN_MVVM
             {
                 options.UseSqlite($"Data Source={DbPath}");
             });
-            services.AddScoped<WeatherRepository>();
-
+            services.AddScoped<IWeatherRepository, WeatherRepository>();
+            services.Decorate<IWeatherRepository, ApiWeatherRepository>();
+            services.AddTransient(_ => RestService.For<IWeatherService>(WEATHERAPI));
+            
             _serviceProvider = services.BuildServiceProvider();
             
             using var scope = _serviceProvider.CreateScope();
