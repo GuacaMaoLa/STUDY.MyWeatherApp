@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace LEARN_MVVM.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Inital : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,13 +18,19 @@ namespace LEARN_MVVM.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     TimeStamp = table.Column<DateTimeOffset>(type: "TEXT", nullable: false),
-                    City = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    Temp = table.Column<double>(type: "double(2,2)", nullable: false)
+                    City = table.Column<string>(type: "TEXT", maxLength: 200, nullable: false),
+                    Temp = table.Column<double>(type: "REAL", precision: 5, scale: 2, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Temperatures", x => x.Id);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Temperatures_City",
+                table: "Temperatures",
+                column: "City",
+                unique: true);
         }
 
         /// <inheritdoc />

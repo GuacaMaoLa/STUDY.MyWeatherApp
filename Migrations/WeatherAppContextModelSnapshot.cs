@@ -25,16 +25,20 @@ namespace LEARN_MVVM.Migrations
 
                     b.Property<string>("City")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasMaxLength(200)
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Temp")
-                        .HasColumnType("double(2,2)");
+                        .HasPrecision(5, 2)
+                        .HasColumnType("REAL");
 
                     b.Property<DateTimeOffset>("TimeStamp")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("City")
+                        .IsUnique();
 
                     b.ToTable("Temperatures");
                 });

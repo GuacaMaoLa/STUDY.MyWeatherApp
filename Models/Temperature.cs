@@ -9,12 +9,8 @@ namespace LEARN_MVVM.Models
 
         public DateTimeOffset TimeStamp { get; set; }
 
-        [Required]
-        [MaxLength(100)]
-        
         public string City { get; set; } = null!;
 
-        [Column(TypeName = "double(2,2)")]
         public double Temp {  get; set; }
     }
 }

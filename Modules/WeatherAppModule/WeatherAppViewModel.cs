@@ -16,7 +16,6 @@ namespace LEARN_MVVM.Modules.WeatherAppModule
 {
     public partial class WeatherAppViewModel : ObservableObject
     {
-        private const short COOLDOWN = 10;
         private const double KELVIN = 273.15;
         
         /// <summary>
