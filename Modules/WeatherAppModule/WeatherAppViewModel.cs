@@ -60,6 +60,11 @@ namespace LEARN_MVVM.Modules.WeatherAppModule
             // check if Database already have an entry for the city
             var temperatureEntry = await repo.ReadWeatherAsync(City);
 
+            if (SnackbarService.Equals(this.SnackbarService))
+            {
+                
+            }
+
             if (!temperatureEntry.IsSuccess)
             {
                 // show snackbar with error message

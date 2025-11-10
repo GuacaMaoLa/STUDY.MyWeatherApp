@@ -7,7 +7,7 @@
              xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="700"
-             Background="#272537"
+             Background="{StaticResource primaryBackgroundColor}"
              d:DataContext="{d:DesignInstance Type=local:NotifyAndreViewModel}">
     <UserControl.DataContext>
         <local:NotifyAndreViewModel/>
@@ -25,12 +25,13 @@
 
         <ui:TextBox Foreground="AntiqueWhite" 
                     FontSize="14"
-                    PlaceholderText="Type city name" 
+                    PlaceholderText="Type in your message for Andrékowski" 
                     TextWrapping="Wrap"
                     Grid.Column="0" Grid.Row="3"
                     Margin="10"
                     Text="{Binding Massage}"/>
         <ui:Button Foreground="AntiqueWhite"
+                   Appearance="Primary"
                    Content="Send" FontSize="14"
                    Grid.Column="1" Grid.Row="1"
                    Height="40" Width="55"
