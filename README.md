@@ -1,4 +1,4 @@
-This is an example WPF project to help me learn the basics of being an industrial full-stack developer.
+This is an example WPF project to help me learn the basics of being an industrial commissioning developer.
 
 It contains the basics of:
 1. MVVM-Architecture (with CommunityToolkit.MVVM)
